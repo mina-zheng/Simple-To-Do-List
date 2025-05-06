@@ -1,5 +1,7 @@
 env/
 
+canvas_template.py
+
 keys.py
 
 __pycache__

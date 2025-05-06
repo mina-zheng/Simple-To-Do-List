@@ -4,8 +4,6 @@ from tkinter import ttk
 from tkinter.filedialog import *
 import threading
 
-import keys
-
 class Window:
     def __init__(self):
         self.root = tk.Tk()
@@ -144,11 +142,11 @@ class Window:
 
     def import_canvas(self):
         try:
-            self.canvas = Canvas(keys.API_URL_t, keys.API_KEY_t)
-            self.account = self.canvas.get_user(keys.USER_ID)
-            self.courses = self.account.get_courses()
-            for course in self.courses:
-                items = self.account.get_assignments(course)
+            canvas = Canvas(self.API_URL, self.API_KEY)
+            account = canvas.get_user(self.USER_ID)
+            courses = account.get_courses()
+            for course in courses:
+                items = account.get_assignments(course)
                 try:
                     if course.enrollment_term_id == 418:
                         self.text_box.insert("end", f'\ncourse: {course} \n')
@@ -165,15 +163,23 @@ class Window:
             self.import_successful = False
         
     def save_file(self):
-        file_path = asksaveasfilename(defaultextension=".txt", filetypes=[("Text Files", "*.txt")])
-        if file_path:
-            with open(file_path, "w") as file:
+        canvas_file_path = asksaveasfilename(defaultextension=".txt", filetypes=[("Text Files", "*.txt")])
+        if canvas_file_path:
+            with open(canvas_file_path, "w") as file:
                 file.write(self.text_box.get("1.0", tk.END))
+        custom_file_path = asksaveasfilename(defaultextension=".txt", filetypes=[("Text Files", "*.txt")])
+        if custom_file_path:
+            with open(custom_file_path, "w") as file:
+                file.write(self.custom_text_box.get("1.0", tk.END))
     
     def get_save(self):
-        file_path = askopenfilename(defaultextension=".txt", filetypes=[("Text Files", "*.txt")])
-        if file_path:
-            with open(file_path, "r") as file:
+        canvas_file_path = askopenfilename(defaultextension=".txt", filetypes=[("Text Files", "*.txt")])
+        if canvas_file_path:
+            with open(canvas_file_path, "r") as file:
+                self.text_box.insert(tk.END, file.read())
+        custom_file_path = askopenfilename(defaultextension=".txt", filetypes=[("Text Files", "*.txt")])
+        if custom_file_path:
+            with open(custom_file_path, "r") as file:
                 self.text_box.insert(tk.END, file.read())
 
 if __name__ == "__main__":
