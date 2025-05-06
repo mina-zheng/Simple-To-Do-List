@@ -9,7 +9,7 @@ import keys
 class Window:
     def __init__(self):
         self.root = tk.Tk()
-        self.root.title("CANVAS TO DO LIST")
+        self.root.title("SIMPLE TO DO LIST")
         self.root.geometry(f"{300}x{300}")
         self.root.attributes('-topmost', True)
 
@@ -41,10 +41,10 @@ class Window:
         self.custom_text_box.grid(in_ = self.text_area_frame, row=1, column=0, sticky="nsew", padx=10, pady=(10, 5))
 
     def save_button(self):
-        self.save = tk.Button(self.home, text = "Save Current List", width = 35, command = self.save_file)
+        self.save = tk.Button(self.button_frame, text = "Save Current List", width = 35, command = self.save_file)
     
     def import_from_saved_button(self):
-        self.saved = tk.Button(self.home, width = 35, text = "Import from Saved", command = self.get_save)
+        self.saved = tk.Button(self.button_frame, width = 35, text = "Import from Saved", command = self.get_save)
 
     def auto_import_button(self):
         auto_import = tk.Checkbutton(self.home, text = "Auto Import From Canvas Every Hour?", command = self.run_import)
@@ -53,6 +53,24 @@ class Window:
     def canvas_button(self):
         self.submit = tk.Button(self.button_frame, width = 70, text = "Import from Canvas", command = self.canvas_button_command)
 
+    def hide_button(self):
+        self.hide = tk.Button(self.button_frame, command = self.hide_buttons, text = "Hide Buttons")
+
+    def hide_buttons(self):
+        self.submit.grid_remove()
+        self.save.grid_remove()
+        self.saved.grid_remove()
+
+        self.hide.config(text="Show Buttons", command = self.show_buttons) 
+        self.buttons_hidden = True
+
+    def show_buttons(self):
+        self.submit.grid()
+        self.save.grid()
+        self.saved.grid()
+
+        self.hide.config(text="Hide Buttons", command = self.hide_buttons)
+
     def place_buttons(self):
         self.button_frame.columnconfigure(0, weight=1) 
         self.button_frame.columnconfigure(1, weight=1)
@@ -60,6 +78,7 @@ class Window:
         self.submit.grid(in_=self.button_frame, row=0, column=0, columnspan=2, sticky="ew", padx = 5, pady = 10)
         self.save.grid(in_=self.button_frame, row=1, column=0, sticky="ew", padx=5)
         self.saved.grid(in_=self.button_frame, row=1, column=1, sticky="ew", padx=5)
+        self.hide.grid(in_=self.button_frame, row=3, column=0, columnspan = 2, sticky="ew", padx=5)
 
     def canvas_button_command(self):
         self.home.pack_forget()
@@ -74,6 +93,13 @@ class Window:
 
         go_back = tk.Button(self.import_canvas_frame, text = "nevermind :(", command = self.go_back)
         go_back.pack(padx = 20, pady = 5)
+    
+    def make_buttons(self):
+        self.canvas_button()
+        self.save_button()
+        self.import_from_saved_button()
+        self.hide_button()
+
     
     def set_get_buttons(self):
         self.import_canvas_frame.pack(fill = tk.BOTH, expand = True)
@@ -92,7 +118,6 @@ class Window:
         label_USER_ID.pack(padx = 20, pady = 10)
         self.enter_USER_ID = tk.Entry(self.import_canvas_frame)
         self.enter_USER_ID.pack()
-
 
     def go_back(self):
         self.import_canvas_frame.pack_forget()
@@ -154,9 +179,7 @@ class Window:
 if __name__ == "__main__":
     win = Window()
     win.set_up_frames()
-    win.canvas_button()
-    win.save_button()
-    win.import_from_saved_button()
+    win.make_buttons()
     win.place_buttons()
     win.text_area()
     win.place_text_boxes()
